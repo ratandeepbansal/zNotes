@@ -486,23 +486,28 @@ export default function NoteTakingApp() {
         </div>
 
         {/* Editor */}
-        <div className="flex-1 p-6 overflow-hidden">
-          <textarea
-            ref={textareaRef}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder={
-              noteType === 'braindump'
-                ? "Start your brain dump... Let your thoughts flow freely without worrying about structure or perfection."
-                : "Capture your idea... Focus on the core concept and build upon it."
-            }
-            className={`w-full h-full resize-none outline-none bg-transparent ${selectedFont} ${selectedSize} ${
-              isDarkNodes
-                ? 'text-gray-100 placeholder-gray-500'
-                : 'text-gray-800 placeholder-gray-400'
-            }`}
-            style={{ lineHeight: '1.6' }}
-          />
+        <div className="flex-1 flex justify-center overflow-hidden">
+          <div className="w-[80%] p-6">
+            <textarea
+              ref={textareaRef}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder={
+                noteType === 'braindump'
+                  ? "Start your brain dump... Let your thoughts flow freely without worrying about structure or perfection."
+                  : "Capture your idea... Focus on the core concept and build upon it."
+              }
+              className={`w-full h-full resize-none outline-none border-none focus:outline-none focus:ring-0 bg-transparent ${selectedFont} ${selectedSize} ${
+                isDarkNodes
+                  ? 'text-gray-100 placeholder-gray-500'
+                  : 'text-gray-800 placeholder-gray-400'
+              }`}
+              style={{
+                lineHeight: '1.6',
+                caretColor: isDarkNodes ? '#e5e7eb' : '#1f2937',
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>
