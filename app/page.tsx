@@ -203,6 +203,73 @@ export default function NoteTakingApp() {
     }
   };
 
+  const askAI = () => {
+    if (!content.trim()) return;
+
+    let prompt = '';
+
+    if (noteType === 'braindump') {
+      prompt = `below is my journal entry. wyt? talk through it with me like a friend. don't therpaize me and give me a whole breakdown, don't repeat my thoughts with headings. really take all of this, and tell me back stuff truly as if you're an old homie. Keep it casual, dont say yo, help me make new connections i don't see, comfort, validate, challenge, all of it. dont be afraid to say a lot. format with markdown headings if needed. do not just go through every single thing i say, and say it back to me. you need to proccess everythikng is say, make connections i don't see it, and deliver it all back to me as a story that makes me feel what you think i wanna feel. thats what the best therapists do. ideally, you're style/tone should sound like the user themselves. it's as if the user is hearing their own tone but it should still feel different, because you have different things to say and don't just repeat back they say. else, start by saying, "hey, thanks for showing me this. my thoughts:" my entry: ${content}`;
+    } else {
+      prompt = `Hey — thanks for trusting me with this idea. Start by pasting your raw idea (one paragraph or a few bullets) after this message. Don't worry about neatness. I'll do the heavy lifting.
+
+How to behave: Be an old homie who knows product & startup basics but talks like the user — casual, blunt, validating, a little provocative when needed. Don't act like a therapist. Don't repeat back the idea line-by-line. Don't ask for clarification before giving value — make sensible guesses and surface them clearly.
+
+Goal: Turn the raw idea into a warm, structured framework that helps the creator (me) see the clearest path forward: the problem, customers, core solution (MVP), business model, risks, key experiments to run in the next 30/90 days, and a simple roadmap. Also give me the language I can use to explain the idea to partners/investors/users (one-liners and 30-second pitch), plus 3 tactical next actions I can do tomorrow. Be honest about weaknesses and where I'm over-optimistic.
+
+Output format & sections (use these headings exactly):
+
+opening (friend energy) — 2–4 sentences: a warm reaction that validates and teases; don't repeat the idea verbatim.
+
+core insight (1 line) — the single clearest insight or thesis behind the idea.
+
+problem (3 bullets max) — who's in pain and what specifically hurts for them (concrete scenarios).
+
+target user / early adopter (1–2 bullets) — the precise person who'll adopt first and why.
+
+solution / value prop (3 bullets) — what the product actually does and the emotional/functional benefit.
+
+one-liner & 30s pitch — a crisp tagline + a 30-second spoken pitch you'd say to an investor/partner.
+
+MVP (must be tiny) — the minimal thing to build and the single core interaction to validate.
+
+key metrics to watch (3 max) — metrics that will prove it's working (with target thresholds).
+
+high-risk assumptions (3) — the things that make-or-break the idea; call them out plainly.
+
+cheap experiments to test assumptions (5) — each experiment: what to do, what to measure, and what success looks like.
+
+monetization options (3 quick ops) — realistic ways to make money early and which to try first.
+
+roadmap (30/90 day plan) — specific milestones and deliverables for next 30 and 90 days.
+
+tone check (1 bullet) — a guess at the brand voice that would resonate with users.
+
+what I'm missing / a hard challenge — one blunt, uncomfortable risk or missing piece I should face.
+
+3 tactical next actions (tomorrow) — exact actions I can do tomorrow (not vague).
+
+Style rules:
+
+Keep each numbered section concise and scannable; use bullets where helpful.
+
+Be opinionated. If you're guessing, prefix with "(assume)" or "(guess)".
+
+Don't ask clarifying questions first; produce output from the idea and note any guesses.
+
+If the idea overlaps with existing products/companies, name 1 example and say why this idea is different.
+
+End with a short, warm nudge: one sentence that motivates me to act.
+
+Optional: After the framework, offer one alternative direction (a "wild pivot") that keeps the core insight but targets a different user or business model.
+
+My idea: ${content}`;
+    }
+
+    const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(prompt)}`;
+    window.open(claudeUrl, '_blank');
+  };
+
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
     const today = new Date();
@@ -486,7 +553,7 @@ export default function NoteTakingApp() {
         </div>
 
         {/* Editor */}
-        <div className="flex-1 flex justify-center overflow-hidden">
+        <div className="flex-1 flex justify-center overflow-hidden relative">
           <div className="w-[60%] p-6">
             <textarea
               ref={textareaRef}
@@ -508,6 +575,30 @@ export default function NoteTakingApp() {
               }}
             />
           </div>
+
+          {/* Ask AI Floating Button */}
+          {content.trim() && (
+            <button
+              onClick={askAI}
+              className={`fixed bottom-6 right-6 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all hover:scale-105 ${
+                noteType === 'braindump'
+                  ? isDarkNodes
+                    ? 'bg-purple-700 hover:bg-purple-600 text-white'
+                    : 'bg-purple-600 hover:bg-purple-700 text-white'
+                  : isDarkNodes
+                  ? 'bg-yellow-700 hover:bg-yellow-600 text-white'
+                  : 'bg-yellow-600 hover:bg-yellow-700 text-white'
+              }`}
+              style={{ zIndex: 40 }}
+            >
+              {noteType === 'braindump' ? (
+                <Brain size={18} />
+              ) : (
+                <Lightbulb size={18} />
+              )}
+              <span className="text-sm font-medium">Ask GPT</span>
+            </button>
+          )}
         </div>
       </div>
     </div>
