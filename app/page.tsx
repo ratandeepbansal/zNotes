@@ -487,7 +487,7 @@ export default function NoteTakingApp() {
 
         {/* Editor */}
         <div className="flex-1 flex justify-center overflow-hidden">
-          <div className="w-[80%] p-6">
+          <div className="w-[60%] p-6">
             <textarea
               ref={textareaRef}
               value={content}
