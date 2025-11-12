@@ -54,10 +54,29 @@
 
 /* Focus styles for better accessibility */
 button:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
+select:focus-visible {
   outline: 2px solid rgb(59, 130, 246);
   outline-offset: 2px;
+}
+
+/* Remove all focus styles from textarea */
+textarea {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
+  letter-spacing: 0.01em;
+}
+
+textarea:focus,
+textarea:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  ring: 0 !important;
 }
 
 /* Smooth transitions */
