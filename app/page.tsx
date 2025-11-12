@@ -219,7 +219,9 @@ export default function NoteTakingApp() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className={`flex h-screen overflow-hidden ${
+      isDarkNodes ? 'bg-gray-950' : 'bg-gray-50'
+    }`}>
       {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 z-50 w-72 transform transition-all duration-300 ease-in-out ${
@@ -323,24 +325,38 @@ export default function NoteTakingApp() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 px-4 py-3">
+        <div className={`px-4 py-3 ${
+          isDarkNodes
+            ? 'bg-gray-900 border-b border-gray-700'
+            : 'bg-white border-b border-gray-200'
+        }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {/* Menu Toggle */}
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className={`p-2 rounded-lg transition-colors ${
+                  isDarkNodes
+                    ? 'hover:bg-gray-800 text-gray-300'
+                    : 'hover:bg-gray-100 text-gray-600'
+                }`}
               >
-                <Menu size={20} className="text-gray-600" />
+                <Menu size={20} />
               </button>
 
               {/* Note Type Toggle */}
-              <div className="flex items-center bg-gray-100 rounded-lg p-1">
+              <div className={`flex items-center rounded-lg p-1 ${
+                isDarkNodes ? 'bg-gray-800' : 'bg-gray-100'
+              }`}>
                 <button
                   onClick={() => setNoteType('braindump')}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md transition-all ${
                     noteType === 'braindump'
-                      ? 'bg-white text-purple-600 shadow-sm'
+                      ? isDarkNodes
+                        ? 'bg-gray-700 text-purple-400 shadow-sm'
+                        : 'bg-white text-purple-600 shadow-sm'
+                      : isDarkNodes
+                      ? 'text-gray-400 hover:text-gray-200'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -351,7 +367,11 @@ export default function NoteTakingApp() {
                   onClick={() => setNoteType('idea')}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md transition-all ${
                     noteType === 'idea'
-                      ? 'bg-white text-yellow-600 shadow-sm'
+                      ? isDarkNodes
+                        ? 'bg-gray-700 text-yellow-400 shadow-sm'
+                        : 'bg-white text-yellow-600 shadow-sm'
+                      : isDarkNodes
+                      ? 'text-gray-400 hover:text-gray-200'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -364,7 +384,11 @@ export default function NoteTakingApp() {
               <select
                 value={selectedFont}
                 onChange={(e) => setSelectedFont(e.target.value)}
-                className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`px-3 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  isDarkNodes
+                    ? 'bg-gray-800 border-gray-700 text-gray-200 hover:border-gray-600'
+                    : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
+                }`}
               >
                 {FONTS.map((font) => (
                   <option key={font.value} value={font.value}>
@@ -377,7 +401,11 @@ export default function NoteTakingApp() {
               <select
                 value={selectedSize}
                 onChange={(e) => setSelectedSize(e.target.value)}
-                className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`px-3 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  isDarkNodes
+                    ? 'bg-gray-800 border-gray-700 text-gray-200 hover:border-gray-600'
+                    : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
+                }`}
               >
                 {FONT_SIZES.map((size) => (
                   <option key={size.value} value={size.value}>
@@ -392,7 +420,11 @@ export default function NoteTakingApp() {
               <div className="flex items-center gap-2">
                 <div
                   className={`font-mono text-lg ${
-                    bounce ? 'animate-bounce text-red-600' : 'text-gray-700'
+                    bounce
+                      ? 'animate-bounce text-red-600'
+                      : isDarkNodes
+                      ? 'text-gray-200'
+                      : 'text-gray-700'
                   }`}
                 >
                   {formatTime(timeLeft)}
@@ -401,7 +433,11 @@ export default function NoteTakingApp() {
                   onClick={() => setTimerActive(!timerActive)}
                   className={`p-2 rounded-lg transition-colors ${
                     timerActive
-                      ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                      ? isDarkNodes
+                        ? 'bg-red-900 text-red-400 hover:bg-red-800'
+                        : 'bg-red-100 text-red-600 hover:bg-red-200'
+                      : isDarkNodes
+                      ? 'hover:bg-gray-800 text-gray-300'
                       : 'hover:bg-gray-100 text-gray-600'
                   }`}
                 >
@@ -412,15 +448,23 @@ export default function NoteTakingApp() {
               {/* Copy Button */}
               <button
                 onClick={copyToClipboard}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative"
+                className={`p-2 rounded-lg transition-colors relative ${
+                  isDarkNodes
+                    ? 'hover:bg-gray-800'
+                    : 'hover:bg-gray-100'
+                }`}
               >
                 {showCopied ? (
                   <Check size={20} className="text-green-600" />
                 ) : (
-                  <Copy size={20} className="text-gray-600" />
+                  <Copy size={20} className={isDarkNodes ? 'text-gray-300' : 'text-gray-600'} />
                 )}
                 {showCopied && (
-                  <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs bg-gray-800 text-white px-2 py-1 rounded whitespace-nowrap">
+                  <span className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs px-2 py-1 rounded whitespace-nowrap ${
+                    isDarkNodes
+                      ? 'bg-gray-700 text-gray-100'
+                      : 'bg-gray-800 text-white'
+                  }`}>
                     Copied!
                   </span>
                 )}
@@ -429,7 +473,11 @@ export default function NoteTakingApp() {
               {/* New Note Button */}
               <button
                 onClick={createNewNote}
-                className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className={`p-2 text-white rounded-lg transition-colors ${
+                  isDarkNodes
+                    ? 'bg-blue-700 hover:bg-blue-600'
+                    : 'bg-blue-600 hover:bg-blue-700'
+                }`}
               >
                 <Plus size={20} />
               </button>
@@ -448,7 +496,11 @@ export default function NoteTakingApp() {
                 ? "Start your brain dump... Let your thoughts flow freely without worrying about structure or perfection."
                 : "Capture your idea... Focus on the core concept and build upon it."
             }
-            className={`w-full h-full resize-none outline-none bg-transparent ${selectedFont} ${selectedSize} text-gray-800 placeholder-gray-400`}
+            className={`w-full h-full resize-none outline-none bg-transparent ${selectedFont} ${selectedSize} ${
+              isDarkNodes
+                ? 'text-gray-100 placeholder-gray-500'
+                : 'text-gray-800 placeholder-gray-400'
+            }`}
             style={{ lineHeight: '1.6' }}
           />
         </div>
