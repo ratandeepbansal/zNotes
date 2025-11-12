@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Clock, Plus, Copy, Menu, X, ChevronRight, Brain, Lightbulb, Check } from 'lucide-react';
+import { Clock, Plus, Copy, Menu, X, ChevronRight, Brain, Lightbulb, Check, Moon, Sun } from 'lucide-react';
 
 interface Note {
   id: string;
@@ -38,10 +38,11 @@ export default function NoteTakingApp() {
   const [timeLeft, setTimeLeft] = useState(900); // 15 minutes in seconds
   const [showCopied, setShowCopied] = useState(false);
   const [bounce, setBounce] = useState(false);
+  const [isDarkNodes, setIsDarkNodes] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load notes from localStorage on mount
+  // Load notes and dark mode preference from localStorage on mount
   useEffect(() => {
     const savedNotes = localStorage.getItem('notes');
     if (savedNotes) {
@@ -54,6 +55,11 @@ export default function NoteTakingApp() {
     } else {
       createNewNote();
     }
+
+    const savedDarkNodes = localStorage.getItem('darkNodes');
+    if (savedDarkNodes) {
+      setIsDarkNodes(JSON.parse(savedDarkNodes));
+    }
   }, []);
 
   // Save notes to localStorage whenever they change
@@ -62,6 +68,11 @@ export default function NoteTakingApp() {
       localStorage.setItem('notes', JSON.stringify(notes));
     }
   }, [notes]);
+
+  // Save dark nodes preference to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('darkNodes', JSON.stringify(isDarkNodes));
+  }, [isDarkNodes]);
 
   // Timer logic
   useEffect(() => {
@@ -211,29 +222,62 @@ export default function NoteTakingApp() {
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 transform transition-all duration-300 ease-in-out ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } ${
+          isDarkNodes
+            ? 'bg-gray-900 border-r border-gray-700'
+            : 'bg-white border-r border-gray-200'
         }`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800">Notes</h2>
-          <button
-            onClick={() => setIsSidebarOpen(false)}
-            className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <X size={20} className="text-gray-600" />
-          </button>
+        <div className={`flex items-center justify-between p-4 ${
+          isDarkNodes ? 'border-b border-gray-700' : 'border-b border-gray-200'
+        }`}>
+          <h2 className={`text-lg font-semibold ${
+            isDarkNodes ? 'text-gray-100' : 'text-gray-800'
+          }`}>Notes</h2>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsDarkNodes(!isDarkNodes)}
+              className={`p-1 rounded-lg transition-colors ${
+                isDarkNodes
+                  ? 'hover:bg-gray-800 text-gray-300'
+                  : 'hover:bg-gray-100 text-gray-600'
+              }`}
+              title={isDarkNodes ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDarkNodes ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className={`p-1 rounded-lg transition-colors ${
+                isDarkNodes
+                  ? 'hover:bg-gray-800 text-gray-300'
+                  : 'hover:bg-gray-100 text-gray-600'
+              }`}
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
         <div className="overflow-y-auto h-[calc(100%-64px)]">
           {notes.length === 0 ? (
-            <p className="text-gray-500 text-sm p-4">No notes yet. Start writing!</p>
+            <p className={`text-sm p-4 ${
+              isDarkNodes ? 'text-gray-400' : 'text-gray-500'
+            }`}>No notes yet. Start writing!</p>
           ) : (
             notes.map((note) => (
               <div
                 key={note.id}
                 onClick={() => loadNote(note)}
-                className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
-                  currentNote?.id === note.id ? 'bg-blue-50' : ''
+                className={`p-4 cursor-pointer transition-colors ${
+                  isDarkNodes
+                    ? `border-b border-gray-800 hover:bg-gray-800 ${
+                        currentNote?.id === note.id ? 'bg-gray-800' : ''
+                      }`
+                    : `border-b border-gray-100 hover:bg-gray-50 ${
+                        currentNote?.id === note.id ? 'bg-blue-50' : ''
+                      }`
                 }`}
               >
                 <div className="flex items-start justify-between">
@@ -244,18 +288,28 @@ export default function NoteTakingApp() {
                       ) : (
                         <Lightbulb size={14} className="text-yellow-500 flex-shrink-0" />
                       )}
-                      <p className="text-sm font-medium text-gray-900 truncate">
+                      <p className={`text-sm font-medium truncate ${
+                        isDarkNodes ? 'text-gray-100' : 'text-gray-900'
+                      }`}>
                         {note.title || generateTitle(note.content) || 'Untitled Note'}
                       </p>
                     </div>
-                    <p className="text-xs text-gray-500">{formatDate(note.timestamp)}</p>
+                    <p className={`text-xs ${
+                      isDarkNodes ? 'text-gray-400' : 'text-gray-500'
+                    }`}>{formatDate(note.timestamp)}</p>
                     {note.content && (
-                      <p className="text-xs text-gray-600 mt-1 line-clamp-2">{note.content}</p>
+                      <p className={`text-xs mt-1 line-clamp-2 ${
+                        isDarkNodes ? 'text-gray-300' : 'text-gray-600'
+                      }`}>{note.content}</p>
                     )}
                   </div>
                   <button
                     onClick={(e) => deleteNote(note.id, e)}
-                    className="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                    className={`ml-2 transition-colors ${
+                      isDarkNodes
+                        ? 'text-gray-500 hover:text-red-400'
+                        : 'text-gray-400 hover:text-red-500'
+                    }`}
                   >
                     <X size={16} />
                   </button>
